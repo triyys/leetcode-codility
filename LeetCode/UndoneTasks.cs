@@ -10,34 +10,6 @@ namespace LeetCode
 {
     public class UndoneTasks
     {
-        public static int UniquePaths(int m, int n)
-        {
-            Hashtable memo = new Hashtable();
-            memo.Add("tri", 0);
-            int result = UniquePathsUtil(m, n, memo);
-            Console.WriteLine($"Time Complexity O(m * n): {memo["tri"]}");
-            return result;
-        }
-        private static int UniquePathsUtil(int m, int n, Hashtable memo)
-        {
-            if (m == 0 || n == 0)
-            {
-                return 0;
-            }
-            if (m == 1 && n == 1)
-            {
-                return 1;
-            }
-            string key = $"{m}|{n}";
-            if (memo.ContainsKey(key))
-            {
-                return (int)memo[key];
-            }
-            int count = (int)memo["tri"] + 1;
-            memo["tri"] = count;
-            memo[key] = UniquePathsUtil(m - 1, n, memo) + UniquePathsUtil(m, n - 1, memo);
-            return (int)memo[key];
-        }
         public static IList<string> GenerateParenthesis(int n)
         {
             return default(List<string>);

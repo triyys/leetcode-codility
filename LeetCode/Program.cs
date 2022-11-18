@@ -37,7 +37,125 @@ namespace LeetCode
             // Console.WriteLine(MaxSliceSum(new int[] { -10, 8, 5, -3, 16 }));
 
             //List<int> elements = Enumerable.Range(1, 2).ToList();
-            Console.WriteLine(UndoneTasks.UniquePaths(23, 9));
+            int[][] board = new int[][]
+            {
+                new int[] { 3, 1, 1 },
+                new int[] { 2, 5, 1 },
+                new int[] { 1, 5, 5 },
+                new int[] { 2, 1, 1 }
+            };
+            Console.WriteLine(BombCleaner(board));
+        }
+
+        public static int BombCleaner(int[][] board)
+        {
+            if (board.Length == 0) return 0;
+
+            int cols = board[0].Length;
+
+            return BombCleanerUtil(board, 0, 0, cols - 1, new Hashtable());
+        }
+
+        private static int BombCleanerUtil(int[][] board, int current, int first, int second, Hashtable memo)
+        {
+            Console.WriteLine($"{board[current][first]}, {board[current][second]}");
+
+            if (current == board.Length - 1)
+            {
+                return board[current][first] + board[current][second];
+            }
+
+            int cols = board[current].Length;
+
+            int nextFirst = first;
+            int nextSecond = second;
+
+            List<Tuple<int, int>> available = new List<Tuple<int, int>>();
+            int[] currentRow = board[current + 1];
+
+            if (second - first == 1)
+            {
+                available.Add(new Tuple<int, int>(first, currentRow[first]));
+                available.Add(new Tuple<int, int>(second, currentRow[second]));
+                if (first != 0)
+                {
+                    available.Add(new Tuple<int, int>(first - 1, currentRow[first - 1]));
+                }
+                if (second != cols - 1)
+                {
+                    available.Add(new Tuple<int, int>(second + 1, currentRow[second + 1]));
+                }
+                nextFirst = available.Aggregate((x, y) => x.Item2 > y.Item2 ? x : y).Item1;
+                available.RemoveAt(available.FindIndex((x) => x.Item1 == nextFirst));
+                nextSecond = available.Aggregate((x, y) => x.Item2 > y.Item2 ? x : y).Item1;
+            }
+            else if (second - first == 2)
+            {
+                List<Tuple<int, int>> available1 = new List<Tuple<int, int>>
+                {
+                    new Tuple<int, int>(first, currentRow[first]),
+                    new Tuple<int, int>(first + 1, currentRow[first + 1])
+                };
+                List<Tuple<int, int>> available2 = new List<Tuple<int, int>>
+                {
+                    new Tuple<int, int>(second, currentRow[second]),
+                    new Tuple<int, int>(second - 1, currentRow[second - 1])
+                };
+
+                if (first != 0)
+                {
+                    available1.Add(new Tuple<int, int>(first - 1, currentRow[first - 1]));
+                }
+                if (second != cols - 1)
+                {
+                    available2.Add(new Tuple<int, int>(second + 1, currentRow[second + 1]));
+                }
+                nextFirst = available1.Aggregate((x, y) => x.Item2 > y.Item2 ? x : y).Item1;
+                available1.RemoveAt(available1.FindIndex((x) => x.Item1 == nextFirst));
+                int candidate1 = available1.Aggregate((x, y) => x.Item2 > y.Item2 ? x : y).Item1;
+
+                nextSecond = available2.Aggregate((x, y) => x.Item2 > y.Item2 ? x : y).Item1;
+                available2.RemoveAt(available2.FindIndex((x) => x.Item1 == nextSecond));
+                int candidate2 = available2.Aggregate((x, y) => x.Item2 > y.Item2 ? x : y).Item1;
+
+                if (nextFirst == nextSecond)
+                {
+                    if (currentRow[candidate1] > currentRow[candidate2])
+                    {
+                        nextFirst = candidate1;
+                    }
+                    else
+                    {
+                        nextSecond = candidate2;
+                    }
+                }
+            }
+            else
+            {
+                List<Tuple<int, int>> available1 = new List<Tuple<int, int>>
+                {
+                    new Tuple<int, int>(first, currentRow[first]),
+                    new Tuple<int, int>(first + 1, currentRow[first + 1])
+                };
+                List<Tuple<int, int>> available2 = new List<Tuple<int, int>>
+                {
+                    new Tuple<int, int>(second, currentRow[second]),
+                    new Tuple<int, int>(second - 1, currentRow[second - 1])
+                };
+
+                if (first != 0)
+                {
+                    available1.Add(new Tuple<int, int>(first - 1, currentRow[first - 1]));
+                }
+                if (second != cols - 1)
+                {
+                    available2.Add(new Tuple<int, int>(second + 1, currentRow[second + 1]));
+                }
+                nextFirst = available1.Aggregate((x, y) => x.Item2 > y.Item2 ? x : y).Item1;
+                nextSecond = available2.Aggregate((x, y) => x.Item2 > y.Item2 ? x : y).Item1;
+            }
+
+            return board[current][first] + board[current][second] + BombCleanerUtil(board, current + 1, nextFirst < nextSecond ? nextFirst : nextSecond, nextFirst > nextSecond ? nextFirst : nextSecond, memo);
         }
 
         public static int BinaryGap(int N)

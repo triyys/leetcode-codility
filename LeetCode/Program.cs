@@ -53,16 +53,18 @@ namespace LeetCode
 
             int cols = board[0].Length;
 
-            return BombCleanerUtil(board, 0, 0, cols - 1, new Hashtable());
+            return BombCleanerUtil(board, 0, 0, cols - 1);
         }
 
-        private static int BombCleanerUtil(int[][] board, int current, int first, int second, Hashtable memo)
+        private static int BombCleanerUtil(int[][] board, int current, int first, int second)
         {
             Console.WriteLine($"{board[current][first]}, {board[current][second]}");
 
+            int currentRowSum = board[current][first] + board[current][second];
+
             if (current == board.Length - 1)
             {
-                return board[current][first] + board[current][second];
+                return currentRowSum;
             }
 
             int cols = board[current].Length;
@@ -155,7 +157,7 @@ namespace LeetCode
                 nextSecond = available2.Aggregate((x, y) => x.Item2 > y.Item2 ? x : y).Item1;
             }
 
-            return board[current][first] + board[current][second] + BombCleanerUtil(board, current + 1, nextFirst < nextSecond ? nextFirst : nextSecond, nextFirst > nextSecond ? nextFirst : nextSecond, memo);
+            return currentRowSum + BombCleanerUtil(board, current + 1, nextFirst < nextSecond ? nextFirst : nextSecond, nextFirst > nextSecond ? nextFirst : nextSecond);
         }
 
         public static int BinaryGap(int N)

@@ -39,12 +39,134 @@ namespace LeetCode
             //List<int> elements = Enumerable.Range(1, 2).ToList();
             int[][] board = new int[][]
             {
-                new int[] { 3, 1, 1 },
-                new int[] { 2, 5, 1 },
-                new int[] { 1, 5, 5 },
-                new int[] { 2, 1, 1 }
+                new int[] { 3, 1, 1, 1, 1 },
+                new int[] { 2, 5, 1, 1, 3 },
+                new int[] { 1, 5, 5, 1, 1 },
+                new int[] { 2, 1, 1, 1, 1 },
             };
-            Console.WriteLine(BombCleaner(board));
+            Console.WriteLine(BombCleanerVer2(board));
+        }
+
+        public static int BombCleanerVer2(int[][] board)
+        {
+            if (board.Length == 0) return 0;
+
+            int cols = board[0].Length;
+
+            return BombCleanerVer2Util(board, 0, 0, cols - 1);
+        }
+
+        public static int BombCleanerVer2Util(int[][] board, int currentRowIndex, int first, int second)
+        {
+            int currentRowSum = board[currentRowIndex][first] + board[currentRowIndex][second];
+            if (currentRowIndex >= board.Length - 1)
+            {
+                return currentRowSum;
+            }
+            int cols = board[currentRowIndex].Length;
+            int leftLeft = -1;
+            int leftMiddle = -1;
+            int leftRight = -1;
+            int middleLeft = -1;
+            int middleMiddle = -1;
+            int middleRight = -1;
+            int rightLeft = -1;
+            int rightMiddle = -1;
+            int rightRight = -1;
+            if (second - first == 1)
+            {
+                middleMiddle = BombCleanerVer2Util(board, currentRowIndex + 1, first, second);
+                if (first != 0)
+                {
+                    leftLeft = BombCleanerVer2Util(board, currentRowIndex + 1, first - 1, second - 1);
+                    leftMiddle = BombCleanerVer2Util(board, currentRowIndex + 1, first - 1, second);
+                }
+                if (second != cols - 1)
+                {
+                    middleRight = BombCleanerVer2Util(board, currentRowIndex + 1, first, second + 1);
+                    rightRight = BombCleanerVer2Util(board, currentRowIndex + 1, first + 1, second + 1);
+                }
+                if (first != 0 && second != cols - 1)
+                {
+                    leftRight = BombCleanerVer2Util(board, currentRowIndex + 1, first - 1, second + 1);
+                }
+                List<int> list = new List<int>()
+                {
+                    middleMiddle,
+                    leftLeft,
+                    leftMiddle,
+                    middleRight,
+                    rightRight,
+                    leftRight
+                };
+                return currentRowSum + list.Max();
+            }
+            else if (second - first == 2)
+            {
+                middleMiddle = BombCleanerVer2Util(board, currentRowIndex + 1, first, second);
+                middleLeft = BombCleanerVer2Util(board, currentRowIndex + 1, first, second - 1);
+                rightMiddle = BombCleanerVer2Util(board, currentRowIndex + 1, first + 1, second);
+                if (first != 0)
+                {
+                    leftLeft = BombCleanerVer2Util(board, currentRowIndex + 1, first - 1, second - 1);
+                    leftMiddle = BombCleanerVer2Util(board, currentRowIndex + 1, first - 1, second);
+                }
+                if (second != cols - 1)
+                {
+                    middleRight = BombCleanerVer2Util(board, currentRowIndex + 1, first, second + 1);
+                    rightRight = BombCleanerVer2Util(board, currentRowIndex + 1, first + 1, second + 1);
+                }
+                if (first != 0 && second != cols - 1)
+                {
+                    leftRight = BombCleanerVer2Util(board, currentRowIndex + 1, first - 1, second + 1);
+                }
+                List<int> list = new List<int>()
+                {
+                    middleMiddle,
+                    middleLeft,
+                    rightMiddle,
+                    leftLeft,
+                    leftMiddle,
+                    middleRight,
+                    rightRight,
+                    leftRight
+                };
+                return currentRowSum + list.Max();
+            }
+            else
+            {
+                middleMiddle = BombCleanerVer2Util(board, currentRowIndex + 1, first, second);
+                middleLeft = BombCleanerVer2Util(board, currentRowIndex + 1, first, second - 1);
+                rightMiddle = BombCleanerVer2Util(board, currentRowIndex + 1, first + 1, second);
+                rightLeft = BombCleanerVer2Util(board, currentRowIndex + 1, first + 1, second - 1);
+                if (first != 0)
+                {
+                    leftLeft = BombCleanerVer2Util(board, currentRowIndex + 1, first - 1, second - 1);
+                    leftMiddle = BombCleanerVer2Util(board, currentRowIndex + 1, first - 1, second);
+                }
+                if (second != cols - 1)
+                {
+                    middleRight = BombCleanerVer2Util(board, currentRowIndex + 1, first, second + 1);
+                    rightRight = BombCleanerVer2Util(board, currentRowIndex + 1, first + 1, second + 1);
+                }
+                if (first != 0 && second != cols - 1)
+                {
+                    leftRight = BombCleanerVer2Util(board, currentRowIndex + 1, first - 1, second + 1);
+                }
+                List<int> list = new List<int>()
+                {
+                    middleMiddle,
+                    middleLeft,
+                    rightMiddle,
+                    rightLeft,
+                    leftLeft,
+                    leftMiddle,
+                    middleRight,
+                    rightRight,
+                    leftRight
+                };
+                return currentRowSum + list.Max();
+            }
         }
 
         public static int BombCleaner(int[][] board)

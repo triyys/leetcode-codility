@@ -11,7 +11,7 @@ namespace LeetCode
     {
         public static int CountDistinctSlices(int M, int[] A)
         {
-            int result = 0;
+            long result = 0;
             int head = 0;
             int tail = 0;
             HashSet<int> set = new HashSet<int>();
@@ -36,7 +36,7 @@ namespace LeetCode
                 ++tail;
             }
 
-            return Math.Min(result, 1000000000);
+            return (int)Math.Min(result, 1000000000);
         }
 
         public static int UniquePaths(int m, int n)

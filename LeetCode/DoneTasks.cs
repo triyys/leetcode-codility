@@ -9,6 +9,36 @@ namespace LeetCode
 {
     public class DoneTasks
     {
+        public static int CountDistinctSlices(int M, int[] A)
+        {
+            int result = 0;
+            int head = 0;
+            int tail = 0;
+            HashSet<int> set = new HashSet<int>();
+            int len = A.Length;
+
+            while (head < len && tail < len)
+            {
+                while (head < len && !set.Contains(A[head]))
+                {
+                    result += head - tail + 1;
+                    set.Add(A[head]);
+                    ++head;
+                }
+
+                while (head < len && A[tail] != A[head])
+                {
+                    set.Remove(A[tail]);
+                    ++tail;
+                }
+
+                set.Remove(A[tail]);
+                ++tail;
+            }
+
+            return Math.Min(result, 1000000000);
+        }
+
         public static int UniquePaths(int m, int n)
         {
             Hashtable memo = new Hashtable();
